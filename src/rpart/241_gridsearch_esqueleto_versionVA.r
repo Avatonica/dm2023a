@@ -13,7 +13,7 @@ gc()   #Garbage Collection
 
 require("data.table")
 require("rpart")
-#require("parallel")
+require("parallel")
 
 ksemillas  <- c(557537, 559939, 663407, 562019, 489113) #reemplazar por las propias semillas
 
@@ -68,7 +68,7 @@ ArbolEstimarGanancia  <- function( semilla, param_basicos )
 ArbolesMontecarlo  <- function( semillas, param_basicos )
 {
   #la funcion mcmapply  llama a la funcion ArbolEstimarGanancia  tantas veces como valores tenga el vector  ksemillas
-  ganancias  <- mcmapply( ArbolEstimarGanancia, 
+ganancias  <- mcmapply( ArbolEstimarGanancia, 
                           semillas,   #paso el vector de semillas, que debe ser el primer parametro de la funcion ArbolEstimarGanancia
                           MoreArgs= list( param_basicos),  #aqui paso el segundo parametro
                           SIMPLIFY= FALSE,
@@ -101,37 +101,50 @@ archivo_salida  <- "./exp/HT2020/gridsearch.txt"
 #Escribo los titulos al archivo donde van a quedar los resultados
 #atencion que si ya existe el archivo, esta instruccion LO SOBREESCRIBE, y lo que estaba antes se pierde
 #la forma que no suceda lo anterior es con append=TRUE
+
+#Version VA
+#Agrego los dos hiper parametros que faltaban: minbucket y cp
 cat( file=archivo_salida,
      sep= "",
+     "cp", "\t",
      "max_depth", "\t",
      "min_split", "\t",
-     "ganancia_promedio", "\n")
+     "minbucket", "\t",
+     "ganancia_promedio", "\n",
+     append = TRUE)
 
 
 #itero por los loops anidados para cada hiperparametro
 #Aqui usted debera agregar loops !
 
-for( vmax_depth  in  c( 4, 6, 8, 10, 12, 14 )  )
-{
-for( vmin_split  in  c( 1000, 800, 600, 400, 200, 100, 50, 20, 10 )  )
+#Version VA
+
+#Agrego los for para minbucket y cp
+
+
+{for(vmax_depth  in  c(4, 6, 8, 10, 12, 14))
+ for(vmin_split  in  c(1000, 800, 600, 400, 200, 100, 50, 20, 10))
+  for(min_bucket  in  c(10,20,40,60,80,100))
+   for(cp  in  c(-1,-0.5,0,0.2))
+
 {
 
+
   #notar como se agrega
-  param_basicos  <- list( "cp"=         -0.5,       #complejidad minima
+param_basicos  <- list("cp" =  cp,       #complejidad minima
                           "minsplit"=  vmin_split,  #minima cantidad de registros en un nodo para hacer el split
-                          "minbucket"=  5,          #minima cantidad de registros en una hoja
-                          "maxdepth"=  vmax_depth ) #profundidad máxima del arbol
+                          "minbucket"=  min_bucket,          #minima cantidad de registros en una hoja
+                          "maxdepth"=  vmax_depth) #profundidad máxima del arbol
 
   #Un solo llamado, con la semilla 17
   ganancia_promedio  <- ArbolesMontecarlo( ksemillas,  param_basicos )
 
   #escribo los resultados al archivo de salida
-  cat(  file=archivo_salida,
+  cat(file=archivo_salida,
         append= TRUE,
         sep= "",
         vmax_depth, "\t",
         vmin_split, "\t",
-        ganancia_promedio, "\n"  )
-
-}
-}
+        cp, "\t",
+        min_bucket, "\t",
+        ganancia_promedio, "\n")}}

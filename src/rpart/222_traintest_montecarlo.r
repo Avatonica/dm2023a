@@ -1,12 +1,13 @@
 rm( list=ls() )  #Borro todos los objetos
 gc()   #Garbage Collection
 
+
 require("data.table")
 require("rpart")
-require("parallel")
+#library(parallel)
 
 ksemillas  <- c(557537, 559939, 663407, 562019, 489113,959953,959339,943651, 930089,922807,
-914629, 895423,884341,868867,710627,703733,602501,420677,345463,343769 )#reemplazar por las propias semillas
+914629, 895423,884341,868867,710627,703733,602501,420677,345463,343769 ) #reemplazar por las propias semillas
 
 #------------------------------------------------------------------------------
 #particionar agrega una columna llamada fold a un dataset que consiste en una particion estratificada segun agrupa
@@ -14,16 +15,16 @@ ksemillas  <- c(557537, 559939, 663407, 562019, 489113,959953,959339,943651, 930
 
 particionar  <- function( data,  division, agrupa="",  campo="fold", start=1, seed=NA )
 {
-  if( !is.na(seed) )   set.seed( seed )
+  if(!is.na(seed))   set.seed(seed)
 
-  bloque  <- unlist( mapply(  function(x,y) { rep( y, x )} ,   division,  seq( from=start, length.out=length(division) )  ) )  
+  bloque  <- unlist(mapply(function(x,y) { rep( y, x )} ,   division,  seq(from=start, length.out=length(division) )  ) )  
 
   data[ , (campo) :=  sample( rep( bloque, ceiling(.N/length(bloque))) )[1:.N],
-          by= agrupa ]
+          by= agrupa]
 }
 #------------------------------------------------------------------------------
 
-ArbolEstimarGanancia  <- function( semilla, param_basicos )
+ArbolEstimarGanancia  <- function(semilla, param_basicos)
 {
   #particiono estratificadamente el dataset
   particionar( dataset, division=c(7,3), agrupa="clase_ternaria", seed= semilla )  #Cambiar por la primer semilla de cada uno !
@@ -35,7 +36,7 @@ ArbolEstimarGanancia  <- function( semilla, param_basicos )
                    control= param_basicos )  #aqui van los parametros del arbol
 
   #aplico el modelo a los datos de testing
-  prediccion  <- predict( modelo,   #el modelo que genere recien
+  prediccion  <- predict(modelo,   #el modelo que genere recien
                           dataset[ fold==2],  #fold==2  es testing, el 30% de los datos
                           type= "prob") #type= "prob"  es que devuelva la probabilidad
 
@@ -44,18 +45,18 @@ ArbolEstimarGanancia  <- function( semilla, param_basicos )
 
 
   #calculo la ganancia en testing  qu es fold==2
-  ganancia_test  <- dataset[ fold==2, 
-                             sum( ifelse( prediccion[, "BAJA+2"]  >  0.025,
+  ganancia_test  <- dataset[fold==2, 
+                             sum(ifelse( prediccion[, "BAJA+2"]  >  0.025,
                                          ifelse( clase_ternaria=="BAJA+2", 117000, -3000 ),
-                                         0 ) )]
+                                         0 ))]
 
   #escalo la ganancia como si fuera todo el dataset
   ganancia_test_normalizada  <-  ganancia_test / 0.3
 
-  return( list( "testing"=       dataset[ fold==2, .N],
-                "testing_pos"=   dataset[ fold==2 & clase_ternaria=="BAJA+2", .N],
-                "envios"=        dataset[ fold==2 , sum( prediccion[ , "BAJA+2"] > 0.025)],
-                "aciertos"=      dataset[ fold==2, sum( prediccion[ , "BAJA+2"] > 0.025 & clase_ternaria=="BAJA+2" )],
+  return( list( "testing"=       dataset[fold==2, .N],
+                "testing_pos"=   dataset[fold==2 & clase_ternaria=="BAJA+2", .N],
+                "envios"=        dataset[fold==2 , sum( prediccion[ , "BAJA+2"] > 0.025)],
+                "aciertos"=      dataset[fold==2, sum( prediccion[ , "BAJA+2"] > 0.025 & clase_ternaria=="BAJA+2" )],
                 "ganancia_test"= ganancia_test_normalizada ))
 }
 #------------------------------------------------------------------------------
@@ -69,16 +70,16 @@ setwd("D:/ITBA/Mineria de datos")  #Establezco el Working Directory
 dataset  <- fread("D:/ITBA/Mineria de datos/datasets/dataset_pequeno.csv")
 
 #trabajo solo con los datos con clase, es decir 202107
-dataset  <- dataset[clase_ternaria != ""]
+dataset  <- dataset[ clase_ternaria!= "" ]
 
 
-param_basicos  <- list("cp" =          -1,  #complejidad minima
+param_basicos  <- list( "cp"=          -1,  #complejidad minima
                         "minsplit"=   900,  #minima cantidad de registros en un nodo para hacer el split
                         "minbucket"=  440,  #minima cantidad de registros en una hoja
-                        "maxdepth" = 5) #profundidad máxima del arbol
+                        "maxdepth"=     5 ) #profundidad máxima del arbol
 
 #Un solo llamado, con la semilla 17
-ArbolEstimarGanancia(17, param_basicos)   
+ArbolEstimarGanancia( 17, param_basicos )   
 
 
 #la funcion mcmapply  llama a la funcion ArbolEstimarGanancia  tantas veces como valores tenga el vector  ksemillas

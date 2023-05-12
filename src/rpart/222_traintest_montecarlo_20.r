@@ -3,7 +3,7 @@ gc()   #Garbage Collection
 
 require("data.table")
 require("rpart")
-require("parallel")
+#require("parallel")
 
 ksemillas  <- c(557537, 559939, 663407, 562019, 489113,959953,959339,943651, 930089,922807,
 914629, 895423,884341,868867,710627,703733,602501,420677,345463,343769 )#reemplazar por las propias semillas
