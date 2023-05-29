@@ -1,6 +1,7 @@
+
 using Random
 
-Random.seed!(102191)
+Random.seed!(557537)
 
 #calcula cuantos encestes logra un jugador con indice de enceste prob
 #haciendo qyt tiros libres
@@ -25,7 +26,6 @@ jugadores
 res = ftirar.( jugadores, 10 )
 
 global primero_ganador = 0
-
 for i = 1:10000  #diez mil experimentos
   vaciertos = ftirar.(jugadores, 10)  #10 tiros libres cada jugador
   mejor = findmax( vaciertos )
@@ -34,5 +34,4 @@ for i = 1:10000  #diez mil experimentos
       primero_ganador += 1
   end
 end
-
 print( primero_ganador )
