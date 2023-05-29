@@ -22,17 +22,17 @@ PARAM  <- list()
 
 PARAM$experimento  <- "KA3720"
 
-PARAM$semilla  <- 102191
-PARAM$input$dataset       <- "./datasets/dataset_pequeno.csv"
+PARAM$semilla  <- 557537
+PARAM$input$dataset       <- "D:/ITBA/Mineria de datos/datasets/dataset_pequeno.csv"
 PARAM$input$training      <- c( 202107 )  # los meses en los que vamos a entrenar
 PARAM$input$future        <- c( 202109 )  #meses donde se aplica el modelo
 
-PARAM$rpart$cp         <-  -0.70530886
-PARAM$rpart$minsplit   <- 570.4201355177
-PARAM$rpart$minbucket  <- 263.5313442153
-PARAM$rpart$mixdepth   <-   8
+PARAM$rpart$cp         <- -0.809058081895821
+PARAM$rpart$minsplit   <- 609.860019726828
+PARAM$rpart$minbucket  <- 299.920172587626
+PARAM$rpart$mixdepth   <- 8
+PARAM$prob_corte       <- 0.0402104698046179
 
-PARAM$prob_corte       <-   0.0438416027
 
 # fin parametros experimento
 
@@ -41,7 +41,7 @@ PARAM$prob_corte       <-   0.0438416027
 
 
 #Aqui se debe poner la carpeta de la materia de SU computadora local
-setwd("~/buckets/b1/")  #Establezco el Working Directory
+setwd("D:/ITBA/Mineria de datos")  #Establezco el Working Directory
 
 #cargo el dataset
 dataset  <- fread(PARAM$input$dataset)

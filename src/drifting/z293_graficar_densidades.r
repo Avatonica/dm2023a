@@ -43,10 +43,10 @@ graficar_campo  <- function( campo )
 }
 #------------------------------------------------------------------------------
 #Aqui comienza el programa
-setwd("X:\\gdrive\\austral2023v\\")   #Establezco el Working Directory
+setwd("D:/ITBA/Mineria de datos")   #Establezco el Working Directory
 
 #cargo el dataset donde voy a entrenar
-dataset  <- fread("./datasets/dataset_pequeno.csv")
+dataset  <- fread("D:/ITBA/Mineria de datos/datasets/dataset_pequeno.csv")
 
 dir.create( "./exp/",  showWarnings = FALSE ) 
 dir.create( "./exp/DR2930/", showWarnings = FALSE )
