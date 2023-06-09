@@ -6,17 +6,17 @@ require("data.table")
 require("rpart")
 require("rpart.plot")
 
-setwd("X:\\gdrive\\austral2023v\\" )  #establezco la carpeta donde voy a trabajar
+setwd("D:/ITBA/Mineria de datos" )  #establezco la carpeta donde voy a trabajar
 
 #cargo el dataset
-dataset  <- fread( "./datasets/dataset_pequeno.csv")
+dataset  <- fread( "D:/ITBA/Mineria de datos/datasets/dataset_pequeno.csv")
 
 dir.create( "./exp/", showWarnings = FALSE  )
 dir.create( "./exp/EA4820/", showWarnings = FALSE )
 setwd( "./exp/EA4820" )
 
 #uso esta semilla para los canaritos
-set.seed(102191)
+set.seed(557537)
 
 #agrego los siguientes canaritos
 for( i in 1:30 ) dataset[ , paste0("canarito", i ) :=  runif( nrow(dataset)) ]
